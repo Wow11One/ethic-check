@@ -1,5 +1,5 @@
 import Link from "next/link";
-import { Button } from "../Button";
+// import { Button } from "../Button";
 import { SignInButton, SignOutButton, SignUpButton, SignedIn, SignedOut, UserButton, useAuth } from "@clerk/nextjs";
 import { Logo } from "../icons/Logo";
 
