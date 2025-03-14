@@ -216,7 +216,7 @@ const AboutPage = () => {
             </div>
 
 
-            <div className="container my-24 mx-auto md:px-6">
+            {/* <div className="container my-24 mx-auto md:px-6">
 
                 <section className="mb-32 text-center">
                     <h2 className="mb-16 text-3xl font-bold">
@@ -236,7 +236,7 @@ const AboutPage = () => {
                     </div>
                 </section>
 
-            </div>
+            </div> */}
 
         </div>
 
