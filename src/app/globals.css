@@ -403,7 +403,7 @@ body {
 
 @media (min-width: 960px) {
   .container {
-      max-width:960px
+    max-width:960px
   }
 }
 
@@ -643,3 +643,54 @@ body {
 :is(.dark .dark\:focus-visible\:ring-primary:focus-visible) {
   --tw-ring-color: hsl(var(--primary))
 }
+
+/* Pagination styling */
+.pagination {
+  display: flex;
+  justify-content: center;
+  padding-left: 0;
+  list-style: none;
+  margin: 20px;
+}
+
+.pagination li {
+  margin: 0 5px;
+}
+
+.pagination li a {
+  display: inline-block;
+  padding: 10px 15px;
+  background-color: #171717;
+  color: white;
+  border: 1px solid #494949;
+  border-radius: 5px;
+  text-decoration: none;
+  transition: background-color 0.3s ease, color 0.3s ease;
+}
+
+.pagination li a:hover {
+  background-color: #333333;
+  color: white;
+}
+
+.pagination li.active a {
+  background-color: #333333;
+  color: white;
+  border-color: #494949;
+}
+
+/* Posts per page dropdown styling */
+.mb-3 {
+  margin-bottom: 20px;
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+}
+
+.mb-3 label {
+  margin-right: 10px;
+  font-weight: bold;
+  font-size: 1.1rem;
+  color: #333;
+}
+
