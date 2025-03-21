@@ -11,11 +11,11 @@ export const sendRequestToChatGpt = async (body: EthicForm) => {
     usability: body.usability,
   });
 
-  const perplexityClient = new OpenAI({
+  const chatGPTClient = new OpenAI({
     apiKey: process.env.CHAT_GPT_SECRET,
   });
 
-  const aiResponse = await perplexityClient.chat.completions.create({
+  const aiResponse = await chatGPTClient.chat.completions.create({
     model: "gpt-4o",
     messages: [
       {

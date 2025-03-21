@@ -216,7 +216,7 @@ const AboutPage = () => {
             </div>
 
 
-            {/* <div className="container my-24 mx-auto md:px-6">
+            {<div className="container my-24 mx-auto md:px-6">
 
                 <section className="mb-32 text-center">
                     <h2 className="mb-16 text-3xl font-bold">
@@ -225,18 +225,13 @@ const AboutPage = () => {
 
                     <div className="grid items-center gap-6 grid-cols-2 ">
                         <div className="mb-12 lg:mb-0">
-                            <img src="https://d1.awsstatic.com/Perplexity-Logo-Horizontal.4fd25780b0863b5971cd95cbf006c0167a115e89.png"
-                                className="px-6 dark:brightness-50 md:px-12" alt="Nasa - logo" />
-                        </div>
-
-                        <div className="mb-12 lg:mb-0">
                             <img src="https://assets-global.website-files.com/633d92770fc68548a10ca623/64d6405da6675baa8faff8a6_1681039182chatgpt-logo-with-name.png"
                                 className="px-6 dark:brightness-50 md:px-12" alt="ChatGPT - logo" />
                         </div>
                     </div>
                 </section>
 
-            </div> */}
+            </div>}
 
         </div>
 
