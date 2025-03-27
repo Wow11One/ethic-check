@@ -1,15 +1,15 @@
-import connectDB from "@/db/database";
-import { requestAIs } from "@/services/aiRequestsService";
-import { currentUser } from "@clerk/nextjs/server";
-import { NextRequest, NextResponse } from "next/server";
+import connectDB from '@/db/database';
+import { requestAIs } from '@/services/aiRequestsService';
+import { currentUser } from '@clerk/nextjs/server';
+import { NextRequest, NextResponse } from 'next/server';
 
 export async function POST(req: NextRequest) {
   const data = await req.json();
   await connectDB();
-  const { chatGptResponse } = await requestAIs(data);
+  const { geminiResponse } = await requestAIs(data);
 
   return NextResponse.json({
-    chatGptResponse,
+    geminiResponse,
   });
 }
 
@@ -22,7 +22,7 @@ export async function GET() {
     });
   } catch {
     return NextResponse.json({
-      message: "fail",
+      message: 'fail',
     });
   }
 }

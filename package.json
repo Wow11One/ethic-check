@@ -3,16 +3,19 @@
   "version": "0.1.0",
   "private": true,
   "scripts": {
-    "dev": "next dev",
+    "dev": "env-cmd -f env/.env.development next dev",
     "build": "next build",
     "start": "next start",
     "lint": "next lint"
   },
   "dependencies": {
     "@clerk/nextjs": "^5.0.6",
+    "@google/generative-ai": "^0.24.0",
     "@hookform/error-message": "^2.0.1",
+    "@next/env": "^15.2.4",
     "axios": "^1.6.8",
     "dompurify": "^3.1.2",
+    "env-cmd": "^10.1.0",
     "install": "^0.13.0",
     "marked": "^12.0.2",
     "mongodb": "^6.6.1",

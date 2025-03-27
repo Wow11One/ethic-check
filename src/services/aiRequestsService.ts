@@ -1,25 +1,14 @@
-import { EthicForm } from "@/types/formTypes";
-import { saveNewRequestToUserHistory } from "@/repository/userRequestsHistory";
-import { sendRequestToChatGpt } from "./chatGPTService";
+import { EthicForm } from '@/types/formTypes';
+import { saveNewRequestToUserHistory } from '@/repository/userRequestsHistory';
+import { sendRequestToChatGpt } from './chatGPTService';
+import { sendRequestToGemini } from '@/services/geminiService';
 
 export const requestAIs = async (data: EthicForm) => {
-  const chatGptResponse = await sendRequestToChatGpt(data);
-  saveNewRequestToUserHistory(
-    data.url,
-    data.country.label,
-    {
-      colorsAndSymbolism: data.colorsAndSymbolism,
-      contentAndImagery: data.colorsAndSymbolism,
-      language: data.language,
-      usability: data.usability,
-      localization: data.localization,
-    },
-    chatGptResponse.reduce<{ content: string }[]>((acc, curr) => {
-      acc.push({ content: curr.message.content || "" });
-      return acc;
-    }, [])
-  );
+  // const chatGptResponse = await sendRequestToChatGpt(data);
+  const geminiResponse = await sendRequestToGemini(data);
+
   return {
-    chatGptResponse,
+    // chatGptResponse,
+    geminiResponse,
   };
 };

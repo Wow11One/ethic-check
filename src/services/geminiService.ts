@@ -1,9 +1,9 @@
 import { saveNewRequestToUserHistory } from '@/repository/userRequestsHistory';
 import { EthicForm } from '@/types/formTypes';
 import { constructRequestToAI } from '@/utils/constructRequestToAI';
-import OpenAI from 'openai';
+import { DynamicRetrievalMode, GoogleGenerativeAI } from '@google/generative-ai';
 
-export const sendRequestToChatGpt = async (body: EthicForm) => {
+export const sendRequestToGemini = async (body: EthicForm) => {
   const requestString = constructRequestToAI(body.url, body.country.label, {
     localization: body.localization,
     language: body.language,
@@ -12,20 +12,12 @@ export const sendRequestToChatGpt = async (body: EthicForm) => {
     usability: body.usability,
   });
 
-  const chatGPTClient = new OpenAI({
-    apiKey: process.env.CHAT_GPT_SECRET,
+  const geminiClient = new GoogleGenerativeAI(process.env.GOOGLE_GEMINI_API_KEY || '');
+  const model = geminiClient.getGenerativeModel({
+    model: 'gemini-2.0-flash',
   });
 
-  const aiResponse = await chatGPTClient.chat.completions.create({
-    model: 'gpt-4o-search-preview',
-    messages: [
-      {
-        role: 'user',
-        content: requestString,
-      },
-    ],
-    web_search_options: { search_context_size: 'low' },
-  });
+  const response = await model.generateContent([requestString]);
 
   saveNewRequestToUserHistory(
     body.url,
@@ -37,11 +29,8 @@ export const sendRequestToChatGpt = async (body: EthicForm) => {
       usability: body.usability,
       localization: body.localization,
     },
-    aiResponse.choices.reduce<{ content: string }[]>((acc, curr) => {
-      acc.push({ content: curr.message.content || '' });
-      return acc;
-    }, []),
+    [{ content: response.response.text() }],
   );
 
-  return aiResponse.choices;
+  return [{ content: response.response.text() }];
 };
