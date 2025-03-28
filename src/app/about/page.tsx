@@ -225,8 +225,8 @@ const AboutPage = () => {
 
                     <div className="grid items-center gap-6 grid-cols-2 ">
                         <div className="mb-12 lg:mb-0">
-                            <img src="https://assets-global.website-files.com/633d92770fc68548a10ca623/64d6405da6675baa8faff8a6_1681039182chatgpt-logo-with-name.png"
-                                className="px-6 dark:brightness-50 md:px-12" alt="ChatGPT - logo" />
+                            <img src="https://upload.wikimedia.org/wikipedia/commons/8/8a/Google_Gemini_logo.svg"
+                                className="px-6 dark:brightness-50 md:px-12" alt="Gemini - logo" />
                         </div>
                     </div>
                 </section>

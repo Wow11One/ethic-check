@@ -7,9 +7,9 @@ import { CheckResults } from "@/types/formTypes";
 
 export const AIServicePage = () => {
   const [checkResult, setCheckResults] = useState<{
-    chatGptResponse: CheckResults[];
+    geminiResponse: CheckResults[];
   }>({
-    chatGptResponse: [],
+    geminiResponse: [],
   });
   const [loading, setIsLoading] = useState(false);
 

@@ -17,9 +17,9 @@ interface IAIRequestFormProps {
   setLoading: (loading: boolean) => void;
   loading: boolean;
   checkResult: {
-    chatGptResponse: CheckResults[];
+    geminiResponse: CheckResults[];
   };
-  setCheckResults: (checkResult: { chatGptResponse: CheckResults[] }) => void;
+  setCheckResults: (checkResult: { geminiResponse: CheckResults[] }) => void;
 }
 
 export const AIRequestForm = ({ loading, setLoading, setCheckResults }: IAIRequestFormProps) => {
@@ -41,7 +41,7 @@ export const AIRequestForm = ({ loading, setLoading, setCheckResults }: IAIReque
       const checkRequest = await axios.post('api/check-site', formData);
 
       setCheckResults({
-        chatGptResponse: checkRequest.data.geminiResponse.map((el: any) => ({
+        geminiResponse: checkRequest.data.geminiResponse.map((el: any) => ({
           content: el.content,
         })),
       });

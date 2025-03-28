@@ -4,10 +4,10 @@ import { CheckParams } from "@/types/formTypes";
 import { User, currentUser } from "@clerk/nextjs/server";
 
 export const saveNewRequestToUserHistory = async (
-  siteUrl: string,
-  country: string,
-  checkParams: CheckParams,
-  chatGptResponse: {
+    siteUrl: string,
+    country: string,
+    checkParams: CheckParams,
+    geminiResponse: {
     content: String;
   }[]
 ) => {
@@ -17,7 +17,7 @@ export const saveNewRequestToUserHistory = async (
     email: user?.emailAddresses[0].emailAddress,
     siteUrl,
     country,
-    chatGptResponse,
+    geminiResponse: geminiResponse,
     requestParams: checkParams,
   });
 

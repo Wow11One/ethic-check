@@ -66,9 +66,9 @@ const RequestsHistoryPage = () => {
               {el.siteUrl}
             </div>
             <div className="mb-5">
-              <h3 style={{ fontSize: '1rem', fontWeight: 'bold' }}>ChatGPT Response</h3>
+              <h3 style={{ fontSize: '1rem', fontWeight: 'bold' }}>Gemini Response</h3>
               <ul>
-                {el.chatGptResponse.map((response, index) => (
+                {el.geminiResponse.map((response, index) => (
                   response.content.split('###').map((paragraph, index) => (
                     <li key={index}>{paragraph}</li>
                   ))

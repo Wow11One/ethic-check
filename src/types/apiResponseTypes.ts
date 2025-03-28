@@ -5,7 +5,7 @@ export interface RequestHistory {
   siteUrl: string;
   country: string;
   requestParams: CheckParams;
-  chatGptResponse: {
+  geminiResponse: {
     content: String;
   }[];
 }

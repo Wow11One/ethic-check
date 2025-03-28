@@ -7,7 +7,7 @@ export const AIResponseDisplay = ({
   loading,
 }: {
   checkResult: {
-    chatGptResponse: CheckResults[];
+    geminiResponse: CheckResults[];
   };
   loading: boolean;
 }) => {
@@ -34,10 +34,10 @@ export const AIResponseDisplay = ({
           <span className='sr-only'>Loading...</span>
         </div>
       ) : null}
-      {checkResult.chatGptResponse.length > 0 ? (
+      {checkResult.geminiResponse.length > 0 ? (
         <div className='max-w-xl self-center m-10 p-10 rounded-lg bg-neutral-900'>
           <h1 className='text-3xl font-bold text-center'>Gemini</h1>
-          {checkResult.chatGptResponse.map((el, index) => (
+          {checkResult.geminiResponse.map((el, index) => (
             <p
               key={index}
               dangerouslySetInnerHTML={{

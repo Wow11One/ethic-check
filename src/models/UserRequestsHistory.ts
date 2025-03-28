@@ -11,7 +11,7 @@ const UserRequestsSchema = new mongoose.Schema({
     contentAndImagery: Boolean,
     localization: Boolean,
   },
-  chatGptResponse: [
+  geminiResponse: [
     {
       content: String,
     },
