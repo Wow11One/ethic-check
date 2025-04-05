@@ -162,7 +162,7 @@ const AboutPage = () => {
         </div>
       </section>
 
-      <div className='max-w-7xl mx-auto px-10'>
+      <div className='max-w-7xl mx-auto px-10 mb-24'>
         <h2 className='mb-16 text-center text-3xl font-bold'>Frequently asked questions</h2>
 
         <div className='grid gap-2 lg:grid-cols-3'>

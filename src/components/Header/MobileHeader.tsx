@@ -110,13 +110,15 @@ export default function MobileHeader() {
               </SignedOut>
             </div>
             <SignedIn>
-              <UserButton />
-              <SignOutButton>
-                <span className='text-sm border cursor-pointer px-5 py-1.5 rounded-lg hover:bg-zinc-900/5 dark:hover:bg-gray-50/5 transition-all duration-300'>
-                  <LogOut className='size-5' />
-                  Sign out
-                </span>
-              </SignOutButton>
+              <div className='flex gap-4'>
+                <SignOutButton>
+                  <span className='flex-1 text-sm border cursor-pointer p-3 rounded-lg hover:bg-zinc-900/5 dark:hover:bg-gray-50/5 transition-all duration-300 text-black dark:text-white inline-flex items-center gap-3'>
+                    <LogOut className='size-4' />
+                    Sign out
+                  </span>
+                </SignOutButton>
+                <UserButton />
+              </div>
             </SignedIn>
           </div>
         </div>

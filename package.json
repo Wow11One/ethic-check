@@ -13,6 +13,7 @@
     "@google/generative-ai": "^0.24.0",
     "@hookform/error-message": "^2.0.1",
     "@next/env": "^15.2.4",
+    "@types/uuid": "^10.0.0",
     "axios": "^1.6.8",
     "dompurify": "^3.1.2",
     "env-cmd": "^10.1.0",
@@ -32,7 +33,8 @@
     "react-paginate": "^8.2.0",
     "react-select": "^5.8.0",
     "react-select-country-list": "^2.2.3",
-    "react-toastify": "^10.0.5"
+    "react-toastify": "^10.0.5",
+    "uuid": "^11.1.0"
   },
   "devDependencies": {
     "@types/dompurify": "^3.0.5",
