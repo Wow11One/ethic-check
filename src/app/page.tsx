@@ -96,7 +96,7 @@ export default function Home() {
             <div className='absolute inset-0 mx-auto max-w-lg bg-background/60 blur-3xl dark:bg-background/20'></div>
             <div className=' flex w-full max-w-lg flex-col gap-6'>
               <h1 className='bg-gradient-to-b from-primary/70 via-primary to-primary bg-clip-text pb-1 text-4xl sm:text-7xl font-semibold text-transparent dark:from-primary/90 dark:to-primary'>
-                Cultural Sensitivity in Every Link.
+                Cultural Sensitivity in Every Link
               </h1>
               <p className='mx-auto max-w-md text-center sm:text-lg text-muted-foreground'>
                 Take the first step towards creating culturally inclusive websites that resonate
