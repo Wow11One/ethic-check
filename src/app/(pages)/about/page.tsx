@@ -46,7 +46,7 @@ const AboutPage = () => {
           </div>
         </div>
         <div className='grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 max-w-7xl mx-auto mb-24 gap-5 px-10'>
-          <div className='relative w-full text-center group flex flex-1 flex-col justify-center items-center p-10 border border-transparent rounded-lg hover:shadow-sm hover:border-gray-100 transition-all duration-300 cursor-pointer'>
+          <div className='relative w-full text-center group flex flex-1 flex-col justify-center items-center p-10 border border-transparent rounded-lg hover:shadow-sm hover:border-gray-100 hover:border-gray-100/10 transition-all duration-300 cursor-pointer'>
             <div className='bg-indigo-50 rounded-lg flex justify-center items-center mb-5 w-20 h-20 mx-auto cursor-pointer transition-all duration-500 group-hover:bg-indigo-600'>
               <svg
                 className='stroke-indigo-600 transition-all duration-500 group-hover:stroke-white'
@@ -72,7 +72,7 @@ const AboutPage = () => {
               plan and structure work how you want. Quickly organizing tasks.
             </p>
           </div>
-          <div className='relative w-full text-center group flex flex-1 flex-col justify-center items-center p-10  border border-transparent rounded-lg hover:shadow-sm hover:border-gray-100 transition-all duration-300 cursor-pointer'>
+          <div className='relative w-full text-center group flex flex-1 flex-col justify-center items-center p-10  border border-transparent rounded-lg hover:shadow-sm hover:border-gray-100 hover:border-gray-100/10 transition-all duration-300 cursor-pointer'>
             <div className='bg-pink-50 rounded-lg flex justify-center items-center mb-5 w-20 h-20 mx-auto cursor-pointer transition-all duration-500 group-hover:bg-pink-600'>
               <svg
                 className='stroke-pink-600 transition-all duration-500 group-hover:stroke-white'
@@ -111,7 +111,7 @@ const AboutPage = () => {
               Bring all your tools and data together. Also join with hundreds of other apps.
             </p>
           </div>
-          <div className='relative w-full text-center group flex flex-1 flex-col justify-center items-center p-10  border border-transparent rounded-lg hover:shadow-sm hover:border-gray-100 transition-all duration-300 cursor-pointer'>
+          <div className='relative w-full text-center group flex flex-1 flex-col justify-center items-center p-10  border border-transparent rounded-lg hover:shadow-sm hover:border-gray-100 hover:border-gray-100/10 transition-all duration-300 cursor-pointer'>
             <div className='bg-teal-50 rounded-lg flex justify-center items-center mb-5 w-20 h-20 mx-auto cursor-pointer transition-all duration-500 group-hover:bg-teal-600'>
               <svg
                 className='stroke-teal-600 transition-all duration-500 group-hover:stroke-white'
@@ -134,7 +134,7 @@ const AboutPage = () => {
               Get real time insight into progress and allows teams to track their work habits
             </p>
           </div>
-          <div className='relative w-full text-center group flex flex-1 flex-col justify-center items-center p-10 border border-transparent rounded-lg hover:shadow-sm hover:border-gray-100 transition-all duration-300 cursor-pointer'>
+          <div className='relative w-full text-center group flex flex-1 flex-col justify-center items-center p-10 border border-transparent rounded-lg hover:shadow-sm hover:border-gray-100 hover:border-gray-100/10 transition-all duration-300 cursor-pointer'>
             <div className='bg-orange-50 rounded-lg flex justify-center items-center mb-5 w-20 h-20 mx-auto cursor-pointer transition-all duration-500 group-hover:bg-orange-600'>
               <svg
                 className='stroke-orange-600 transition-all duration-500 group-hover:stroke-white'
@@ -166,7 +166,7 @@ const AboutPage = () => {
         <h2 className='mb-16 text-center text-3xl font-bold'>Frequently asked questions</h2>
 
         <div className='grid gap-2 lg:grid-cols-3'>
-          <div className='flex flex-col justify-start border border-transparent rounded-lg hover:shadow-sm p-10 hover:border-gray-100 transition-all duration-300 cursor-pointer'>
+          <div className='flex flex-col justify-start border border-transparent rounded-lg hover:shadow-sm p-10 hover:border-gray-100 dark:hover:border-gray-100/10 transition-all duration-300 cursor-pointer'>
             <p className='mb-4 font-bold'>What is cross-cultural website design?</p>
             <p className='text-neutral-500 dark:text-neutral-300'>
               Cross-cultural website design involves creating online experiences that are inclusive
@@ -176,7 +176,7 @@ const AboutPage = () => {
             </p>
           </div>
 
-          <div className='flex flex-col justify-start border border-transparent rounded-lg hover:shadow-sm p-10 hover:border-gray-100 transition-all duration-300 cursor-pointer'>
+          <div className='flex flex-col justify-start border border-transparent rounded-lg hover:shadow-sm p-10 hover:border-gray-100 dark:hover:border-gray-100/10 transition-all duration-300 cursor-pointer'>
             <p className='mb-4 font-bold'>
               What are some common cultural factors to consider when designing a website?
             </p>
@@ -188,7 +188,7 @@ const AboutPage = () => {
             </p>
           </div>
 
-          <div className='flex flex-col justify-start border border-transparent rounded-lg hover:shadow-sm p-10 hover:border-gray-100 transition-all duration-300 cursor-pointer'>
+          <div className='flex flex-col justify-start border border-transparent rounded-lg hover:shadow-sm p-10 hover:border-gray-100 dark:hover:border-gray-100/10 transition-all duration-300 cursor-pointer'>
             <p className='mb-4 font-bold'>
               What are the benefits of using AI for cross-cultural website checks?
             </p>
@@ -200,7 +200,7 @@ const AboutPage = () => {
             </p>
           </div>
 
-          <div className='flex flex-col justify-start border border-transparent rounded-lg hover:shadow-sm p-10 hover:border-gray-100 transition-all duration-300 cursor-pointer'>
+          <div className='flex flex-col justify-start border border-transparent rounded-lg hover:shadow-sm p-10 hover:border-gray-100 dark:hover:border-gray-100/10 transition-all duration-300 cursor-pointer'>
             <p className='mb-4 font-bold'>
               How often should I review and update my website's cross-cultural elements?
             </p>
@@ -212,7 +212,7 @@ const AboutPage = () => {
             </p>
           </div>
 
-          <div className='flex flex-col justify-start border border-transparent rounded-lg hover:shadow-sm p-10 hover:border-gray-100 transition-all duration-300 cursor-pointer'>
+          <div className='flex flex-col justify-start border border-transparent rounded-lg hover:shadow-sm p-10 hover:border-gray-100 dark:hover:border-gray-100/10 transition-all duration-300 cursor-pointer'>
             <p className='mb-4 font-bold'>
               What are some challenges associated with implementing cross-cultural website design?
             </p>
@@ -223,7 +223,7 @@ const AboutPage = () => {
             </p>
           </div>
 
-          <div className='flex flex-col justify-start border border-transparent rounded-lg hover:shadow-sm p-10 hover:border-gray-100 transition-all duration-300 cursor-pointer'>
+          <div className='flex flex-col justify-start border border-transparent rounded-lg hover:shadow-sm p-10 hover:border-gray-100 dark:hover:border-gray-100/10 transition-all duration-300 cursor-pointer'>
             <p className='mb-4 font-bold'>
               Is cross-cultural website design only relevant for businesses operating globally?
             </p>

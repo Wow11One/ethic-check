@@ -92,6 +92,7 @@ const ServicesPage = () => {
   });
 
   const [loading, setIsLoading] = useState(false);
+  const [showResult, setShowResult] = useState(false);
 
   const scrollRef = useRef<HTMLDivElement>(null);
   const [showTopShadow, setShowTopShadow] = useState(false);
@@ -172,17 +173,27 @@ const ServicesPage = () => {
         </div>
       </aside>
       <div className='flex flex-col flex-1'>
-        {/* <div className='lg:col-span-3 '>
-          <AIResponseDisplay checkResult={checkResult} loading={loading} />
-        </div> */}
-        {/* <div className='lg:col-span-2'>
-          <AIRequestForm
-            setCheckResults={setCheckResults}
-            setLoading={setIsLoading}
-            loading={loading}
-            checkResult={checkResult}
-          />
-        </div> */}
+        {showResult ? (
+          <div className='flex flex-col relative flex-1'>
+            <div className='absolute left-0 top-0 right-0 bottom-0 overflow-y-auto'>
+              <div className='flex flex-col'>
+                <AIResponseDisplay checkResult={checkResult} loading={loading} />
+              </div>
+            </div>
+          </div>
+        ) : (
+          <div className='flex flex-col'>
+            <AIRequestForm
+              setCheckResults={result => {
+                setShowResult(true);
+                setCheckResults(result);
+              }}
+              setLoading={setIsLoading}
+              loading={loading}
+              checkResult={checkResult}
+            />
+          </div>
+        )}
       </div>
     </div>
   );

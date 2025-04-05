@@ -11,7 +11,21 @@ import axios from 'axios';
 import { ErrorMessage } from '@hookform/error-message';
 import { toast } from 'react-toastify';
 import { CheckResults, EthicForm } from '@/types/formTypes';
-import OpenAI from 'openai';
+import { ChevronDown, Cog } from 'lucide-react';
+import { useOutsideClick } from '@/hooks/dom.hooks';
+
+export interface IAIRequestFormState {
+  data: {
+    language: boolean;
+    colorsAndSymbolism: boolean;
+    usability: boolean;
+    contentAndImagery: boolean;
+    localization: boolean;
+    country?: string;
+    url?: string;
+  };
+  errors?: any;
+}
 
 interface IAIRequestFormProps {
   setLoading: (loading: boolean) => void;
@@ -22,23 +36,46 @@ interface IAIRequestFormProps {
   setCheckResults: (checkResult: { geminiResponse: CheckResults[] }) => void;
 }
 
-export const AIRequestForm = ({ loading, setLoading, setCheckResults }: IAIRequestFormProps) => {
-  const { handleSubmit, register, control, formState } = useForm<EthicForm>();
+export const initialState: IAIRequestFormState = {
+  data: {
+    language: false,
+    colorsAndSymbolism: false,
+    usability: false,
+    contentAndImagery: false,
+    localization: false,
+  },
+};
 
-  const onSubmit: SubmitHandler<EthicForm> = async (formData: EthicForm) => {
+export function AIRequestForm({ loading, setLoading, setCheckResults }: IAIRequestFormProps) {
+  const { handleSubmit, register, control, formState } = useForm<EthicForm>();
+  const [isCountriesDropdownVisible, setIsCoutnriesDropdownVisible] = useState(false);
+  const countriesDropdownListRef = useOutsideClick(() => setIsCoutnriesDropdownVisible(false));
+  const [state, setState] = useState(initialState);
+
+  const onSubmit: SubmitHandler<EthicForm> = async (_formData: EthicForm) => {
     try {
       if (
-        !formData.language &&
-        !formData.colorsAndSymbolism &&
-        !formData.usability &&
-        !formData.contentAndImagery &&
-        !formData.localization
+        !state.data.language &&
+        !state.data.colorsAndSymbolism &&
+        !state.data.usability &&
+        !state.data.contentAndImagery &&
+        !state.data.localization
       ) {
-        toast.error('Please select at least one check criteria!!!');
+        return toast.error('Please select at least one check criteria');
       }
+
+      if (!state.data.country?.trim()) {
+        return toast.error('Please select the country');
+      }
+
+      if (!state.data.url?.trim()) {
+        return toast.error('Please select the url');
+      }
+
       setLoading(true);
       toast.info('Check in progress, please wait a bit');
-      const checkRequest = await axios.post('api/check-site', formData);
+
+      const checkRequest = await axios.post('api/check-site', state.data);
 
       setCheckResults({
         geminiResponse: checkRequest.data.geminiResponse.map((el: any) => ({
@@ -52,88 +89,172 @@ export const AIRequestForm = ({ loading, setLoading, setCheckResults }: IAIReque
       setLoading(false);
     }
   };
-  const options = useMemo(() => countryList().getData(), []);
+
+  const countries = useMemo(() => countryList().getData(), []);
 
   return (
-    <div className='flex justify-center items-center min-h-screen bg-black'>
-      {/* <div className="relative py-3 sm:max-w-xl sm:mx-auto">
-        <div className="absolute inset-0 bg-gradient-to-r from-gray-300 to-gray-500 shadow-lg transform -skew-y-6 sm:skew-y-0 sm:-rotate-6 sm:rounded-3xl"></div>
-        <div className="relative px-4 py-10 bg-opacity-80 shadow-lg sm:rounded-3xl sm:p-3 w-full"> */}
-      <form
-        onSubmit={handleSubmit(onSubmit)}
-        className='flex flex-col bg-gray-500/50 shadow-lg p-4 rounded-lg shadow-md max-w-2xl mx-auto'
-      >
-        <h2 className='text-xl text-center font-bold'>Cultural requirements</h2>
-        <div className='grid grid-cols-2 gap-4'>
-          <CheckboxForm
-            disabled={loading}
-            name='language'
-            label='Language check'
-            register={register}
-          />
-          <CheckboxForm
-            disabled={loading}
-            name='colorsAndSymbolism'
-            label='Colors and symbolism check'
-            register={register}
-          />
-          <CheckboxForm
-            disabled={loading}
-            name='usability'
-            label='Usability check'
-            register={register}
-          />
-          <CheckboxForm
-            disabled={loading}
-            name='contentAndImagery'
-            label='Content and imagery check'
-            register={register}
-          />
-          <CheckboxForm
-            disabled={loading}
-            name='localization'
-            label='Localization check'
-            register={register}
-          />
-        </div>
-        <FormInput
-          disabled={loading}
-          validation={{ required: 'This is required.' }}
-          name='url'
-          label='Site url'
-          register={register}
-          errors={formState.errors}
-        />
-        <Controller
-          name='country'
-          control={control}
-          rules={{
-            required: 'This is required.',
-          }}
-          render={({ field }: { field: any }) => (
-            <div className='flex items-center gap-3'>
-              <label htmlFor='country' className='block mb-2'>
-                Country
-              </label>
-              <Select
-                isDisabled={loading}
-                {...field}
-                styles={{
-                  option: styles => ({ ...styles, color: 'black' }),
-                  control: styles => ({ ...styles, minWidth: 300 }),
-                }}
-                options={options}
+    <div className='flex flex-col'>
+      <form onSubmit={handleSubmit(onSubmit)} className='flex flex-col rounded-lg'>
+        <h2 className='inline-flex gap-3 font-semibold text-lg items-center dark:text-white px-5 pt-5'>
+          <Cog className='size-6' />
+          <span>Cultural requirements</span>
+        </h2>
+        <div className='flex flex-col p-5 gap-2'>
+          <div className='grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5 mb-10 mt-5'>
+            <label className='inline-flex items-center cursor-pointer'>
+              <input
+                type='checkbox'
+                value=''
+                className='sr-only peer'
+                defaultChecked={state.data.language}
+                onChange={event =>
+                  setState({ ...state, data: { ...state.data, language: event.target.checked } })
+                }
               />
-              <ErrorMessage errors={formState.errors} name='country' />
-            </div>
-          )}
-        />
-        <Button className='mt-2' disabled={loading} type='submit'>
-          Submit
-        </Button>
+              <div className="relative w-11 h-6 bg-gray-200 rounded-full peer peer-focus:ring-4 peer-focus:ring-blue-300 dark:peer-focus:ring-blue-800 dark:bg-gray-700 peer-checked:after:translate-x-full rtl:peer-checked:after:-translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-0.5 after:start-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all dark:border-gray-600 peer-checked:bg-blue-600 dark:peer-checked:bg-blue-600"></div>
+              <span className='ms-3 text-sm font-medium text-gray-900 dark:text-gray-300'>
+                Language
+              </span>
+            </label>
+            <label className='inline-flex items-center cursor-pointer'>
+              <input
+                type='checkbox'
+                value=''
+                className='sr-only peer'
+                defaultChecked={state.data.colorsAndSymbolism}
+                onChange={event =>
+                  setState({
+                    ...state,
+                    data: { ...state.data, colorsAndSymbolism: event.target.checked },
+                  })
+                }
+              />
+              <div className="relative w-11 h-6 bg-gray-200 rounded-full peer peer-focus:ring-4 peer-focus:ring-blue-300 dark:peer-focus:ring-blue-800 dark:bg-gray-700 peer-checked:after:translate-x-full rtl:peer-checked:after:-translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-0.5 after:start-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all dark:border-gray-600 peer-checked:bg-blue-600 dark:peer-checked:bg-blue-600"></div>
+              <span className='ms-3 text-sm font-medium text-gray-900 dark:text-gray-300'>
+                Colors and symbolism
+              </span>
+            </label>
+            <label className='inline-flex items-center cursor-pointer'>
+              <input
+                type='checkbox'
+                value=''
+                className='sr-only peer'
+                defaultChecked={state.data.usability}
+                onChange={event =>
+                  setState({ ...state, data: { ...state.data, usability: event.target.checked } })
+                }
+              />
+              <div className="relative w-11 h-6 bg-gray-200 rounded-full peer peer-focus:ring-4 peer-focus:ring-blue-300 dark:peer-focus:ring-blue-800 dark:bg-gray-700 peer-checked:after:translate-x-full rtl:peer-checked:after:-translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-0.5 after:start-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all dark:border-gray-600 peer-checked:bg-blue-600 dark:peer-checked:bg-blue-600"></div>
+              <span className='ms-3 text-sm font-medium text-gray-900 dark:text-gray-300'>
+                Usability
+              </span>
+            </label>
+            <label className='inline-flex items-center cursor-pointer'>
+              <input
+                type='checkbox'
+                value=''
+                className='sr-only peer'
+                defaultChecked={state.data.colorsAndSymbolism}
+                onChange={event =>
+                  setState({
+                    ...state,
+                    data: { ...state.data, colorsAndSymbolism: event.target.checked },
+                  })
+                }
+              />
+              <div className="relative w-11 h-6 bg-gray-200 rounded-full peer peer-focus:ring-4 peer-focus:ring-blue-300 dark:peer-focus:ring-blue-800 dark:bg-gray-700 peer-checked:after:translate-x-full rtl:peer-checked:after:-translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-0.5 after:start-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all dark:border-gray-600 peer-checked:bg-blue-600 dark:peer-checked:bg-blue-600"></div>
+              <span className='ms-3 text-sm font-medium text-gray-900 dark:text-gray-300'>
+                Content and imagery
+              </span>
+            </label>
+            <label className='inline-flex items-center cursor-pointer'>
+              <input
+                type='checkbox'
+                value=''
+                className='sr-only peer'
+                defaultChecked={state.data.localization}
+                onChange={event =>
+                  setState({
+                    ...state,
+                    data: { ...state.data, localization: event.target.checked },
+                  })
+                }
+              />
+              <div className="relative w-11 h-6 bg-gray-200 rounded-full peer peer-focus:ring-4 peer-focus:ring-blue-300 dark:peer-focus:ring-blue-800 dark:bg-gray-700 peer-checked:after:translate-x-full rtl:peer-checked:after:-translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-0.5 after:start-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all dark:border-gray-600 peer-checked:bg-blue-600 dark:peer-checked:bg-blue-600"></div>
+              <span className='ms-3 text-sm font-medium text-gray-900 dark:text-gray-300'>
+                Localization
+              </span>
+            </label>
+          </div>
+          <div className='flex flex-col'>
+            <label
+              htmlFor='check-url'
+              className='-mb-2 ms-2 px-1 bg-white dark:bg-zinc-800 rounded relative z-2 inline-flex self-start font-medium text-xs text-zinc-400'
+            >
+              Url
+            </label>
+            <input
+              defaultValue={state.data.url}
+              type='text'
+              id='check-url'
+              placeholder='https://google.com'
+              className='border p-2 rounded-lg dark:bg-zinc-50/10 dark:text-white dark:ring-zinc-100/30 dark:border-zinc-100/10 border-zinc-100 focus:ring-2 focus:ring-zinc-800 outline-none text-zinc-600'
+              onChange={event => {
+                setState({
+                  ...state,
+                  data: { ...state.data, url: event.target.value },
+                });
+              }}
+            />
+          </div>
+          <div className='flex flex-col relative'>
+            <label
+              htmlFor='check-country'
+              className='-mb-2 ms-2 px-1 bg-white dark:bg-zinc-800 relative z-2 inline-flex self-start font-medium text-xs text-zinc-400 rounded'
+            >
+              Country
+            </label>
+            <span
+              id='check-country'
+              className='select-none bg-zinc-50 dark:bg-zinc-50/10 dark:text-white dark:ring-zinc-100/30 dark:border-zinc-100/10 cursor-pointer border p-2 rounded-lg border-zinc-100 focus:ring-zinc-800 focus:ring-[2px] focus:border-transparent text-zinc-600 inline-flex justify-between items-center'
+              onClick={() => setIsCoutnriesDropdownVisible(true)}
+              tabIndex={0}
+            >
+              {countries.find(country => country.label === state.data.country)?.label ||
+                'Choose country...'}
+              <ChevronDown className='size-4' />
+            </span>
+            {isCountriesDropdownVisible && (
+              <div
+                ref={countriesDropdownListRef as any}
+                className='absolute flex z-100 flex-col w-full top-full mt-2 bg-white dark:bg-zinc-800 dark:border-zinc-100/10 rounded-lg max-h-[150px] overflow-y-auto shadow border border-zinc-100 p-1'
+              >
+                {countries.map((country, index) => (
+                  <span
+                    key={index}
+                    onClick={() => {
+                      setState({ ...state, data: { ...state.data, country: country.label } });
+                      setIsCoutnriesDropdownVisible(false);
+                    }}
+                    className='py-1 px-2 hover:bg-zinc-50 dark:hover:bg-zinc-100/10 rounded dark:text-white transition-all duration-300 cursor-pointer text-sm text-zinc-500'
+                  >
+                    {country.label}
+                  </span>
+                ))}
+              </div>
+            )}
+          </div>
+          <Button
+            className='mt-2 border cursor-pointer px-5 py-2 bg-zinc-950 text-white border-zinc-950 dark:hover:bg-gray-200 hover:bg-zinc-800 rounded-lg dark:bg-white dark:text-black transition-all duration-300'
+            disabled={loading}
+            type='submit'
+          >
+            Submit
+          </Button>
+        </div>
       </form>
     </div>
     //   </div>
     // </div>
   );
-};
+}

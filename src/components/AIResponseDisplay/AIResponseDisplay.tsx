@@ -1,5 +1,6 @@
 import { CheckResults } from '@/types/formTypes';
 import dompurify from 'dompurify';
+import { LaptopMinimalCheck } from 'lucide-react';
 import { marked } from 'marked';
 
 export const AIResponseDisplay = ({
@@ -12,7 +13,7 @@ export const AIResponseDisplay = ({
   loading: boolean;
 }) => {
   return (
-    <div className={`text-white flex flex-col ${loading ? 'justify-center items-center' : ''}`}>
+    <div className={`flex flex-col ${loading ? 'justify-center items-center' : ''}`}>
       {loading ? (
         <div role='status'>
           <svg
@@ -35,16 +36,21 @@ export const AIResponseDisplay = ({
         </div>
       ) : null}
       {checkResult.geminiResponse.length > 0 ? (
-        <div className='max-w-xl self-center m-10 p-10 rounded-lg bg-neutral-900'>
-          <h1 className='text-3xl font-bold text-center'>Gemini</h1>
-          {checkResult.geminiResponse.map((el, index) => (
-            <p
-              key={index}
-              dangerouslySetInnerHTML={{
-                __html: dompurify.sanitize(marked.parse(el.content || '') as string),
-              }}
-            />
-          ))}
+        <div className='bg-white dark:bg-zinc-950 text-black dark:text-white'>
+          <h2 className='inline-flex gap-3 font-semibold text-lg items-center dark:text-white px-5 pt-5'>
+            <LaptopMinimalCheck className='size-6' />
+            <span>Results</span>
+          </h2>
+          <div className='p-5'>
+            {checkResult.geminiResponse.map((el, index) => (
+              <p
+                key={index}
+                dangerouslySetInnerHTML={{
+                  __html: el.content?.replace(/```html/i, '')?.replace(/```/i, ''),
+                }}
+              />
+            ))}
+          </div>
         </div>
       ) : null}
     </div>
