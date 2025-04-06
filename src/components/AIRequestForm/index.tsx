@@ -7,12 +7,17 @@ import countryList from 'react-select-country-list';
 import { Button } from '../Button';
 import { FormInput } from '../FormInput';
 import { useMemo, useState } from 'react';
-import axios from 'axios';
+import axios, { HttpStatusCode } from 'axios';
 import { ErrorMessage } from '@hookform/error-message';
 import { toast } from 'react-toastify';
 import { CheckResults, EthicForm } from '@/types/formTypes';
 import { ChevronDown, Cog } from 'lucide-react';
 import { useOutsideClick } from '@/hooks/dom.hooks';
+import { useWalletModal, WalletMultiButton } from '@solana/wallet-adapter-react-ui';
+import { useConnection, useWallet } from '@solana/wallet-adapter-react';
+import { useAuth } from '@clerk/nextjs';
+import { Transaction } from '@solana/web3.js';
+import { v4 } from 'uuid';
 
 export interface IAIRequestFormState {
   data: {
@@ -51,6 +56,33 @@ export function AIRequestForm({ loading, setLoading, setCheckResults }: IAIReque
   const [isCountriesDropdownVisible, setIsCoutnriesDropdownVisible] = useState(false);
   const countriesDropdownListRef = useOutsideClick(() => setIsCoutnriesDropdownVisible(false));
   const [state, setState] = useState(initialState);
+  const walletModal = useWalletModal();
+  const wallet = useWallet();
+  const user = useAuth();
+  const { connection } = useConnection();
+
+  const handleNFTMint = async () => {
+    if (wallet.publicKey && wallet.signTransaction) {
+      const { status, data } = await axios.post('api/onchain/soulbound', {
+        userId: v4(),
+        address: wallet.publicKey,
+      });
+
+      if (status !== HttpStatusCode.Created) {
+        throw new Error('Failed mint soulbound request');
+      }
+
+      const { serializedTransaction } = data;
+
+      const decodedTransaction = Buffer.from(serializedTransaction, 'base64');
+      const transaction = Transaction.from(decodedTransaction);
+
+      const signedTransaction = await wallet.signTransaction(transaction);
+      const signature = await wallet.sendTransaction(signedTransaction, connection);
+
+      console.log(signature);
+    }
+  };
 
   const onSubmit: SubmitHandler<EthicForm> = async (_formData: EthicForm) => {
     try {
@@ -251,10 +283,29 @@ export function AIRequestForm({ loading, setLoading, setCheckResults }: IAIReque
           >
             Submit
           </Button>
+          {!wallet.publicKey ? (
+            <Button
+              className='mt-2 border cursor-pointer px-5 py-2 text-black border-gray-200 hover:bg-gray-100 dark:hover:bg-gray-100/10 dark:border-gray-100/10 rounded-lg dark:text-white transition-all duration-300'
+              disabled={loading}
+              type='button'
+              onClick={() => {
+                walletModal.setVisible(true);
+              }}
+            >
+              Choose Wallet
+            </Button>
+          ) : (
+            <Button
+              className='mt-2 border cursor-pointer px-5 py-2 text-black border-gray-200 hover:bg-gray-100 dark:hover:bg-gray-100/10 dark:border-gray-100/10 rounded-lg dark:text-white transition-all duration-300'
+              disabled={loading}
+              type='button'
+              onClick={() => handleNFTMint()}
+            >
+              Receive "Enterprise" subscription NFT
+            </Button>
+          )}
         </div>
       </form>
     </div>
-    //   </div>
-    // </div>
   );
 }
