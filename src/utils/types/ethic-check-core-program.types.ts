@@ -1,6 +1,6 @@
-export type EthicCheck = {
+export type EthicCheckCore = {
   version: '0.1.0';
-  name: 'nomadz_core';
+  name: 'ethic_check_core';
   instructions: [
     {
       name: 'initialize';
@@ -78,7 +78,12 @@ export type EthicCheck = {
           isSigner: true;
         },
         {
-          name: 'nomadzProgram';
+          name: 'profitWallet';
+          isMut: true;
+          isSigner: false;
+        },
+        {
+          name: 'ethicCheckProgram';
           isMut: false;
           isSigner: false;
         },
@@ -141,7 +146,7 @@ export type EthicCheck = {
           isSigner: true;
         },
         {
-          name: 'nomadzProgram';
+          name: 'ethicCheckProgram';
           isMut: false;
           isSigner: false;
         },
@@ -219,25 +224,30 @@ export type EthicCheck = {
   errors: [
     {
       code: 6000;
+      name: 'InsufficientUserBalanceError';
+      msg: 'Failed to withdraw 1 SOL from user during minting soulbound NFT';
+    },
+    {
+      code: 6001;
       name: 'AssetCreationError';
       msg: 'Failed to create asset during minting soulbound NFT';
     },
     {
-      code: 6001;
+      code: 6002;
       name: 'UpdateAssetMetadataError';
       msg: 'Failed to update asset metadata during minting soulbound NFT';
     },
     {
-      code: 6002;
+      code: 6003;
       name: 'UnknownError';
       msg: 'Unknown error has occured during minting soulbound NFT';
     },
   ];
 };
 
-export const IDL: EthicCheck = {
+export const IDL: EthicCheckCore = {
   version: '0.1.0',
-  name: 'nomadz_core',
+  name: 'ethic_check_core',
   instructions: [
     {
       name: 'initialize',
@@ -315,7 +325,12 @@ export const IDL: EthicCheck = {
           isSigner: true,
         },
         {
-          name: 'nomadzProgram',
+          name: 'profitWallet',
+          isMut: true,
+          isSigner: false,
+        },
+        {
+          name: 'ethicCheckProgram',
           isMut: false,
           isSigner: false,
         },
@@ -378,7 +393,7 @@ export const IDL: EthicCheck = {
           isSigner: true,
         },
         {
-          name: 'nomadzProgram',
+          name: 'ethicCheckProgram',
           isMut: false,
           isSigner: false,
         },
@@ -456,16 +471,21 @@ export const IDL: EthicCheck = {
   errors: [
     {
       code: 6000,
+      name: 'InsufficientUserBalanceError',
+      msg: 'Failed to withdraw 1 SOL from user during minting soulbound NFT',
+    },
+    {
+      code: 6001,
       name: 'AssetCreationError',
       msg: 'Failed to create asset during minting soulbound NFT',
     },
     {
-      code: 6001,
+      code: 6002,
       name: 'UpdateAssetMetadataError',
       msg: 'Failed to update asset metadata during minting soulbound NFT',
     },
     {
-      code: 6002,
+      code: 6003,
       name: 'UnknownError',
       msg: 'Unknown error has occured during minting soulbound NFT',
     },

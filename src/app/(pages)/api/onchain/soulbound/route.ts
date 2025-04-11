@@ -11,7 +11,7 @@ import { NextRequest, NextResponse } from 'next/server';
 import defaultSoulboundMetadataJson from '@/utils/metadata/soulbound.metadata.json';
 import { PinataSDK } from 'pinata';
 import * as anchor from '@coral-xyz/anchor';
-import { EthicCheck, IDL } from '@/utils/types/ethic-check-program.types';
+import { EthicCheckCore, IDL } from '@/utils/types/ethic-check-core-program.types';
 import { TOKEN_PROGRAM_ID } from '@solana/spl-token';
 import NodeWallet from '@coral-xyz/anchor/dist/cjs/nodewallet';
 import { HttpStatusCode } from 'axios';
@@ -27,9 +27,9 @@ const anchorProvider = new anchor.AnchorProvider(
   { commitment: 'confirmed' },
 );
 
-const ethicCheck = new anchor.Program<EthicCheck>(
-  IDL as unknown as EthicCheck,
-  new PublicKey('5HgPxgqHnwim6mJsPbCVnNP1B43Wog9pNFsGsoaXRd8S'),
+const ethicCheckCore = new anchor.Program<EthicCheckCore>(
+  IDL as unknown as EthicCheckCore,
+  new PublicKey('6wHSyHiWp6jjUDHDn7o5hydAeBpLD3EB7JbhyrxJPeHH'),
   anchorProvider,
 );
 
@@ -59,8 +59,12 @@ export async function POST(request: NextRequest) {
   const shortenedUserId = userId.replace(/-/g, '');
 
   const [assetAccount] = PublicKey.findProgramAddressSync(
-    [Buffer.from('soulbound_asset'), Buffer.from(shortenedUserId), ethicCheck.programId.toBytes()],
-    ethicCheck.programId,
+    [
+      Buffer.from('soulbound_asset'),
+      Buffer.from(shortenedUserId),
+      ethicCheckCore.programId.toBytes(),
+    ],
+    ethicCheckCore.programId,
   );
 
   const [metadataAccount] = PublicKey.findProgramAddressSync(
@@ -79,20 +83,23 @@ export async function POST(request: NextRequest) {
   );
 
   const [assetAuthority] = PublicKey.findProgramAddressSync(
-    [Buffer.from('asset_authority'), ethicCheck.programId.toBytes(), assetAccount.toBytes()],
-    ethicCheck.programId,
+    [Buffer.from('asset_authority'), ethicCheckCore.programId.toBytes(), assetAccount.toBytes()],
+    ethicCheckCore.programId,
   );
 
-  const transaction = await ethicCheck.methods
+  const profitWallet = new PublicKey('G5ZegMhe8wwnw257tzAdWfDdYWfE2SbVwK4VEpWTYN9A');
+
+  const transaction = await ethicCheckCore.methods
     .mintSoulboundNft({ userId: shortenedUserId, uri })
     .accounts({
       assetAccount: assetAccount,
       assetAuthority: assetAuthority,
       metadataAccount: metadataAccount,
       user: userPublicKey,
-      nomadzProgram: ethicCheck.programId,
+      ethicCheckProgram: ethicCheckCore.programId,
       mplCoreProgram: mplCoreProgramId,
       tokenProgram: TOKEN_PROGRAM_ID,
+      profitWallet: profitWallet,
       masterEditionAccount: masterEditionAccount,
       mplTokenMetadataProgram: mplTokenMetadataProgramId,
       systemProgram: SystemProgram.programId,

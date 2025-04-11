@@ -301,7 +301,7 @@ export function AIRequestForm({ loading, setLoading, setCheckResults }: IAIReque
               type='button'
               onClick={() => handleNFTMint()}
             >
-              Receive "Enterprise" subscription NFT
+              Upgrade to "Enterprise" (1 SOL + NFT minting fee)
             </Button>
           )}
         </div>
