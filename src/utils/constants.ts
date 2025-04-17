@@ -5,3 +5,8 @@ export enum ApplicationRoutes {
   Services = '/services',
   About = '/about',
 }
+
+export enum AIProviders {
+  GPT = 'gpt',
+  Gemini = 'gemini',
+}

@@ -154,7 +154,7 @@ const ServicesPage = () => {
                       key={request.id}
                       className='border rounded-lg p-2 inline-flex justify-between hover:bg-gray-100 transition-all duration-300 cursor-pointer dark:hover:bg-gray-100/5 dark:text-white'
                     >
-                      <span className='text-sm'>{request.url}</span>
+                      <span className='text-sm truncate'>{request.url}</span>
                     </div>
                     {requests[index + 1] &&
                       (request.datetime.getDate() !== requests[index + 1].datetime.getDate() ||
