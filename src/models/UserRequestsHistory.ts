@@ -15,6 +15,7 @@ const UserRequestsSchema = new mongoose.Schema({
     {
       content: String,
     },
+    { timestamps: true }
   ],
 });
 

@@ -1,17 +1,42 @@
 import { CheckResults } from '@/types/formTypes';
-import dompurify from 'dompurify';
-import { LaptopMinimalCheck } from 'lucide-react';
-import { marked } from 'marked';
+import { downloadBlob, parseFilename } from '@/utils/downloadUtils';
+import axios from 'axios';
+import { MoveLeftIcon, Presentation } from 'lucide-react';
+import { useState } from 'react';
+import { toast } from 'react-toastify';
+import Spinner from '../Spinner';
 
 export const AIResponseDisplay = ({
+  onReturn,
   checkResult,
   loading,
+  requestId,
 }: {
+  onReturn: () => void;
   checkResult: {
     geminiResponse: CheckResults[];
   };
   loading: boolean;
+  requestId: string;
 }) => {
+  const [isDownloadingPresentation, setIsDownloadingPresentation] = useState<boolean>(false);
+
+  const handlePresentationDownload = async () => {
+    try {
+      setIsDownloadingPresentation(() => true);
+      const response = await axios.get('api/presentation', {
+        responseType: 'blob',
+        params: { requestId },
+      });
+      const blob = response.data;
+      downloadBlob(blob, 'Culture check presentation.pptx');
+    } catch (exception: any) {
+      toast.error('Error occurred while generating presentation');
+    } finally {
+      setIsDownloadingPresentation(() => false);
+    }
+  };
+
   return (
     <div className={`flex flex-col ${loading ? 'justify-center items-center' : ''}`}>
       {loading ? (
@@ -38,12 +63,19 @@ export const AIResponseDisplay = ({
       {checkResult.geminiResponse.length > 0 ? (
         <div className='bg-white dark:bg-zinc-950 text-black dark:text-white'>
           <h2 className='inline-flex gap-3 font-semibold text-lg items-center dark:text-white px-5 pt-5'>
-            <LaptopMinimalCheck className='size-6' />
+            <button
+              onClick={onReturn}
+              className='p-1 border-2 border-gray-700 rounded-xl transition-all duration-300 hover:text-white hover:bg-gray-700'
+            >
+              <MoveLeftIcon className='size-5' />
+            </button>
+
             <span>Results</span>
           </h2>
           <div className='p-5'>
             {checkResult.geminiResponse.map((el, index) => (
-              <p
+              <div
+                className='prose prose-h3:mt-0 prose-h2:mt-0 !min-w-full dark:prose-invert'
                 key={index}
                 dangerouslySetInnerHTML={{
                   __html: el.content?.replace(/```html/i, '')?.replace(/```/i, ''),
@@ -53,6 +85,22 @@ export const AIResponseDisplay = ({
           </div>
         </div>
       ) : null}
+
+      <hr className='mb-5 w-[90%] mx-auto' />
+      <div className='flex justify-center mb-5'>
+        <button
+          className='flex items-center gap-3 border-2 border-gray-700 p-2 text-gray-700 rounded-xl transition-all duration-300 hover:text-white hover:bg-gray-700 dark:hover:bg-white dark:hover:!text-black dark:border-white group'
+          onClick={handlePresentationDownload}
+        >
+          {isDownloadingPresentation && <Spinner sizeClasses='size-6' />}
+          {!isDownloadingPresentation && (
+            <Presentation className='size-6 dark:text-white dark:group-hover:text-black' />
+          )}
+          <div className='font-bold dark:text-white dark:group-hover:text-black'>
+            Download presentation
+          </div>
+        </button>
+      </div>
     </div>
   );
 };

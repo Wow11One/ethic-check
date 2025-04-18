@@ -1,5 +1,6 @@
 import connectDB from "@/db/database";
 import UserRequestsHistory from "@/models/UserRequestsHistory";
+import { RequestHistory } from "@/types/apiResponseTypes";
 import { CheckParams } from "@/types/formTypes";
 import { User, currentUser } from "@clerk/nextjs/server";
 
@@ -43,4 +44,10 @@ export const getUserRequestsHistoryFromDB = async (
     history,
     count: historyCount,
   };
+};
+
+export const getOneRequestHistoryFromDB = async (id: RequestHistory['_id']): Promise<RequestHistory> => {
+  const historyRecord = await UserRequestsHistory.findById(id);
+
+  return historyRecord;
 };

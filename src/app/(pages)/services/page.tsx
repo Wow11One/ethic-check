@@ -2,7 +2,10 @@
 
 import { AIRequestForm } from '@/components/AIRequestForm';
 import { AIResponseDisplay } from '@/components/AIResponseDisplay/AIResponseDisplay';
+import Spinner from '@/components/Spinner';
+import { RequestHistory } from '@/types/apiResponseTypes';
 import { CheckResults } from '@/types/formTypes';
+import axios from 'axios';
 import { CircleX, FolderClock } from 'lucide-react';
 import { Fragment, useEffect, useMemo, useRef, useState } from 'react';
 import { v7 as uuid } from 'uuid';
@@ -92,7 +95,9 @@ const ServicesPage = () => {
   });
 
   const [loading, setIsLoading] = useState(false);
-  const [showResult, setShowResult] = useState(false);
+  const [selectedRequest, setSelectedRequest] = useState<RequestHistory | null>(null);
+  const [history, setHistory] = useState<RequestHistory[]>([]);
+  const [isHistoryLoading, setIsHistoryLoading] = useState<boolean>(false);
 
   const scrollRef = useRef<HTMLDivElement>(null);
   const [showTopShadow, setShowTopShadow] = useState(false);
@@ -111,9 +116,23 @@ const ServicesPage = () => {
     setShowBottomShadow(el.scrollTop + el.clientHeight < el.scrollHeight);
   };
 
-  useEffect(() => {
-    handleScroll();
-  }, []);
+  const getHistoryByPage = async (page: number) => {
+      const historyResponse = await axios.get<{
+        history: RequestHistory[],
+        count: number,
+      }>(
+        `/api/get-history?page=${page - 1}&limit=${20}`
+      );
+      return historyResponse.data;
+    };
+
+    useEffect(() => {
+      setIsHistoryLoading(() => true);
+      getHistoryByPage(1).then((data) => {
+        setHistory(data.history);
+        setIsHistoryLoading(() => false);
+      });
+    }, []);
 
   return (
     <div className='flex flex-1 bg-white dark:bg-zinc-950 border-red-500 relative'>
@@ -123,10 +142,10 @@ const ServicesPage = () => {
           <span>Requests history</span>
         </h2>
         <div className='flex flex-col gap-2 flex-1 w-full relative px-5 pb-5'>
-          {requests.length > 0 && showTopShadow && (
+          {history.length > 0 && showTopShadow && (
             <div className='pointer-events-none absolute top-0 left-0 right-0 h-4 z-10 bg-gradient-to-b from-black/10 to-transparent dark:from-gray-100/10' />
           )}
-          {requests.length > 0 && showBottomShadow && (
+          {history.length > 0 && showBottomShadow && (
             <div className='pointer-events-none absolute bottom-0 left-0 right-0 h-4 z-10 bg-gradient-to-t from-black/10 to-transparent dark:from-gray-100/10' />
           )}
           <div className='flex flex-col gap-2 flex-1 w-full relative'>
@@ -136,35 +155,49 @@ const ServicesPage = () => {
               onScroll={handleScroll}
             >
               <div className='flex flex-col gap-2 h-full'>
-                {!requests.length && (
+                {!history.length && !isHistoryLoading && (
                   <div className='flex flex-col flex-1 border-2 border-dashed rounded-xl justify-center items-center gap-3 text-center'>
                     <CircleX className='size-10 text-stone-600' />
                     <span className='text-stone-600'>The request history is empty</span>
                   </div>
                 )}
+                {isHistoryLoading && (
+                  <div className='flex flex-col flex-1 items-center justify-center'>
+                    <Spinner />
+                  </div>
+                )}
                 {requests[0] &&
                   (new Date().getDate() !== requests[0].datetime.getDate() ||
                     new Date().getMonth() !== requests[0].datetime.getMonth() ||
-                    new Date().getFullYear() !== requests[0].datetime.getFullYear()) && (
+                    new Date().getFullYear() !== requests[0].datetime.getFullYear()) &&
+                  !!history.length && (
                     <span className='text-xs text-gray-500 dark:text-gray-300 mt-2'>Today</span>
                   )}
-                {requests.map((request, index) => (
-                  <Fragment key={request.id}>
+                {history.map(request => (
+                  <Fragment key={request._id}>
                     <div
-                      key={request.id}
+                      key={request._id}
                       className='border rounded-lg p-2 inline-flex justify-between hover:bg-gray-100 transition-all duration-300 cursor-pointer dark:hover:bg-gray-100/5 dark:text-white'
+                      onClick={() => {
+                        setCheckResults({
+                          geminiResponse: request.geminiResponse as any,
+                        });
+                        setSelectedRequest(request);
+                      }}
                     >
-                      <span className='text-sm truncate'>{request.url}</span>
+                      <span className='text-sm truncate'>{request.siteUrl}</span>
                     </div>
-                    {requests[index + 1] &&
-                      (request.datetime.getDate() !== requests[index + 1].datetime.getDate() ||
-                        request.datetime.getMonth() !== requests[index + 1].datetime.getMonth() ||
-                        request.datetime.getFullYear() !==
-                          requests[index + 1].datetime.getFullYear()) && (
+                    {/* {
+                     requests[index + 1] &&
+                       (request.datetime.getDate() !== requests[index + 1].datetime.getDate() ||
+                         request.datetime.getMonth() !== requests[index + 1].datetime.getMonth() ||
+                         request.datetime.getFullYear() !==
+                           requests[index + 1].datetime.getFullYear()) && 
+                          (
                         <span className='text-xs text-gray-500 dark:text-gray-300 mt-2'>
-                          {datetimeFormatter.format(requests[index + 1].datetime)}
+                          {datetimeFormatter.format(new Date())}
                         </span>
-                      )}
+                      )} */}
                   </Fragment>
                 ))}
               </div>
@@ -173,11 +206,19 @@ const ServicesPage = () => {
         </div>
       </aside>
       <div className='flex flex-col flex-1'>
-        {showResult ? (
+        {selectedRequest ? (
           <div className='flex flex-col relative flex-1'>
             <div className='absolute left-0 top-0 right-0 bottom-0 overflow-y-auto'>
               <div className='flex flex-col'>
-                <AIResponseDisplay checkResult={checkResult} loading={loading} />
+                <AIResponseDisplay
+                  onReturn={() => {
+                    setCheckResults({ geminiResponse: [] });
+                    setSelectedRequest(null);
+                  }}
+                  checkResult={checkResult}
+                  loading={loading}
+                  requestId={selectedRequest._id}
+                />
               </div>
             </div>
           </div>
@@ -185,7 +226,7 @@ const ServicesPage = () => {
           <div className='flex flex-col'>
             <AIRequestForm
               setCheckResults={result => {
-                setShowResult(true);
+                setSelectedRequest(null);
                 setCheckResults(result);
               }}
               setLoading={setIsLoading}

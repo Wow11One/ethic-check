@@ -1,7 +1,7 @@
 import { saveNewRequestToUserHistory } from '@/repository/userRequestsHistory';
 import { EthicForm } from '@/types/formTypes';
 import { constructRequestToAI } from '@/utils/constructRequestToAI';
-import { DynamicRetrievalMode, GoogleGenerativeAI } from '@google/generative-ai';
+import { DynamicRetrievalMode, GenerateContentResult, GoogleGenerativeAI } from '@google/generative-ai';
 
 export const sendRequestToGemini = async (body: EthicForm) => {
   const requestString = constructRequestToAI(body.url, body.country.label, {
@@ -12,12 +12,7 @@ export const sendRequestToGemini = async (body: EthicForm) => {
     usability: body.usability,
   });
 
-  const geminiClient = new GoogleGenerativeAI(process.env.GOOGLE_GEMINI_API_KEY || '');
-  const model = geminiClient.getGenerativeModel({
-    model: 'gemini-2.0-flash',
-  });
-
-  const response = await model.generateContent([requestString]);
+  const response = await sendRequestToGeminiWithCustomRequest(requestString);
 
   saveNewRequestToUserHistory(
     body.url,
@@ -33,4 +28,13 @@ export const sendRequestToGemini = async (body: EthicForm) => {
   );
 
   return [{ content: response.response.text() }];
+};
+
+export const sendRequestToGeminiWithCustomRequest = async (requestString: string): Promise<GenerateContentResult> => {
+  const geminiClient = new GoogleGenerativeAI(process.env.GOOGLE_GEMINI_API_KEY || '');
+  const model = geminiClient.getGenerativeModel({
+    model: 'gemini-2.0-flash',
+  });
+
+  return model.generateContent([requestString]);
 };

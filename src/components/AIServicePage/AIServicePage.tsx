@@ -2,7 +2,6 @@
 
 import { useState } from 'react';
 import { AIRequestForm } from '../AIRequestForm';
-import { AIResponseDisplay } from '../AIResponseDisplay/AIResponseDisplay';
 import { CheckResults } from '@/types/formTypes';
 
 export const AIServicePage = () => {
@@ -16,7 +15,7 @@ export const AIServicePage = () => {
   return (
     <div className='bg-black min-h-screen grid grid-cols-1 lg:grid-cols-5'>
       <div className='lg:col-span-3'>
-        <AIResponseDisplay checkResult={checkResult} loading={loading} />
+        {/* <AIResponseDisplay setCheckResults={setCheckResults} checkResult={checkResult} loading={loading} /> */}
       </div>
       <div className='lg:col-span-2'>
         <AIRequestForm

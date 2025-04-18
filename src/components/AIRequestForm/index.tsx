@@ -6,7 +6,7 @@ import Select from 'react-select';
 import countryList from 'react-select-country-list';
 import { Button } from '../Button';
 import { FormInput } from '../FormInput';
-import { useMemo, useState } from 'react';
+import { useEffect, useMemo, useState } from 'react';
 import axios, { HttpStatusCode } from 'axios';
 import { ErrorMessage } from '@hookform/error-message';
 import { toast } from 'react-toastify';
@@ -18,6 +18,7 @@ import { useConnection, useWallet } from '@solana/wallet-adapter-react';
 import { useAuth } from '@clerk/nextjs';
 import { Transaction } from '@solana/web3.js';
 import { v4 } from 'uuid';
+import { RequestHistory } from '@/types/apiResponseTypes';
 
 export interface IAIRequestFormState {
   data: {
@@ -60,6 +61,7 @@ export function AIRequestForm({ loading, setLoading, setCheckResults }: IAIReque
   const wallet = useWallet();
   const user = useAuth();
   const { connection } = useConnection();
+  const PAGE_LIMIT = 1;
 
   const handleNFTMint = async () => {
     if (wallet.publicKey && wallet.signTransaction) {
