@@ -3,6 +3,7 @@ import PptxGenJS from 'pptxgenjs';
 import { getOneRequestsHistory } from './getRequestsHistory';
 import { sendRequestToGeminiWithCustomRequest } from './geminiService';
 import { constructPresentationRequestToAI } from '@/utils/constructRequestToAI';
+// @ts-ignore
 import { htmlToPptxText } from 'html2pptxgenjs';
 
 const theme = {

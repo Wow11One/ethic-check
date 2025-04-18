@@ -24,7 +24,6 @@ export const sendRequestToChatGpt = async (body: EthicForm) => {
         content: requestString,
       },
     ],
-    web_search_options: { search_context_size: 'low' },
   });
 
   saveNewRequestToUserHistory(
