@@ -41,3 +41,7 @@ next-env.d.ts
 .env
 .idea
 package-lock.json
+
+ethic_check_core/.anchor
+ethic_check_core/node_modules
+ethic_check_core/target

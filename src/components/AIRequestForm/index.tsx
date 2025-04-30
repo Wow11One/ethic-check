@@ -15,7 +15,7 @@ import { ChevronDown, Cog } from 'lucide-react';
 import { useOutsideClick } from '@/hooks/dom.hooks';
 import { useWalletModal, WalletMultiButton } from '@solana/wallet-adapter-react-ui';
 import { useConnection, useWallet } from '@solana/wallet-adapter-react';
-import { useAuth } from '@clerk/nextjs';
+import { useAuth, useUser } from '@clerk/nextjs';
 import { Transaction } from '@solana/web3.js';
 import { v4 } from 'uuid';
 import { RequestHistory } from '@/types/apiResponseTypes';
@@ -57,16 +57,17 @@ export function AIRequestForm({ loading, setLoading, setCheckResults }: IAIReque
   const [isCountriesDropdownVisible, setIsCoutnriesDropdownVisible] = useState(false);
   const countriesDropdownListRef = useOutsideClick(() => setIsCoutnriesDropdownVisible(false));
   const [state, setState] = useState(initialState);
+  const [canClaimNft, setCanClaimNft] = useState(false);
   const walletModal = useWalletModal();
   const wallet = useWallet();
-  const user = useAuth();
+  const user = useUser();
   const { connection } = useConnection();
   const PAGE_LIMIT = 1;
 
   const handleNFTMint = async () => {
-    if (wallet.publicKey && wallet.signTransaction) {
+    if (wallet.publicKey && wallet.signTransaction && canClaimNft) {
       const { status, data } = await axios.post('api/onchain/soulbound', {
-        userId: v4(),
+        userId: user.user?.id,
         address: wallet.publicKey,
       });
 
@@ -83,8 +84,25 @@ export function AIRequestForm({ loading, setLoading, setCheckResults }: IAIReque
       const signature = await wallet.sendTransaction(signedTransaction, connection);
 
       console.log(signature);
+      setCanClaimNft(false);
     }
   };
+
+  useEffect(() => {
+    if (wallet.publicKey && user.user) {
+      const request = async () => {
+        const { status } = await axios.post('api/onchain/soulbound/allowance', {
+          userId: user.user?.id,
+        });
+
+        if (status === HttpStatusCode.Created) {
+          setCanClaimNft(true);
+        }
+      };
+
+      request().catch(console.error);
+    }
+  }, [wallet.publicKey, user]);
 
   const onSubmit: SubmitHandler<EthicForm> = async (_formData: EthicForm) => {
     try {
@@ -294,17 +312,30 @@ export function AIRequestForm({ loading, setLoading, setCheckResults }: IAIReque
                 walletModal.setVisible(true);
               }}
             >
-              Choose Wallet
+              Choose Wallet to make a Subscription
             </Button>
           ) : (
-            <Button
-              className='mt-2 border cursor-pointer px-5 py-2 text-black border-gray-200 hover:bg-gray-100 dark:hover:bg-gray-100/10 dark:border-gray-100/10 rounded-lg dark:text-white transition-all duration-300'
-              disabled={loading}
-              type='button'
-              onClick={() => handleNFTMint()}
-            >
-              Upgrade to "Enterprise" (1 SOL + NFT minting fee)
-            </Button>
+            <div className='flex flex-col gap-2'>
+              <Button
+                className='mt-2 border cursor-pointer px-5 py-2 text-black border-gray-200 hover:bg-gray-100 dark:hover:bg-gray-100/10 dark:border-gray-100/10 rounded-lg dark:text-white transition-all duration-300 disabled:opacity-30'
+                disabled={loading || !canClaimNft}
+                type='button'
+                onClick={() => handleNFTMint()}
+              >
+                Upgrade to "Enterprise" (1 SOL + NFT minting fee)
+              </Button>
+              <Button
+                className='mt-2 border cursor-pointer px-5 py-2 text-black border-gray-200 hover:bg-gray-100 dark:hover:bg-gray-100/10 dark:border-gray-100/10 rounded-lg dark:text-white transition-all duration-300'
+                disabled={loading}
+                type='button'
+                onClick={() => {
+                  wallet.disconnect();
+                  walletModal.setVisible(true);
+                }}
+              >
+                Change wallet
+              </Button>
+            </div>
           )}
         </div>
       </form>
